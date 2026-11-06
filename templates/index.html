@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uptern | AI Internship Finder</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🚀 Uptern
+        </div>
+
+        <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="/internships">Internships</a></li>
+     <li><a href="/companies">Explore Companies</a></li>
+    <li><a href="#" onclick="openChat()">AI Assistant</a></li>
+    <li><a href="#about">About</a></li>
+    <span>👤 {{ session['name'] }}</span>
+    <a href="/logout">Logout</a>
+</ul>
+
+    </nav>
+
+    <section class="hero">
+
+    <h1>Find Your Dream Internship</h1>
+
+    <p>
+        Discover live internship opportunities and get AI-powered career guidance.
+    </p>
+
+    
+
+    <div class="buttons">
+        <a href="/internships">
+    <button>Explore Internships</button>
+</a>
+       <button class="secondary" onclick="openChat()">
+    Ask Uptern AI
+</button>
+    </div>
+
+</section>
+
+
+
+<section id="about" class="about">
+
+    <h2>About Uptern</h2>
+
+    <p>
+        Uptern is an AI-powered internship discovery platform designed to help
+        students find the right internship opportunities quickly and easily.
+        Instead of searching across multiple websites, users can explore live
+        internships and receive personalized recommendations through an
+        intelligent AI assistant.
+    </p>
+
+    <div class="about-cards">
+
+        <div class="about-card">
+            <h3>🌍 Live Opportunities</h3>
+            <p>
+                Browse internships collected from trusted online sources with
+                real-time updates.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>🤖 AI Career Assistant</h3>
+            <p>
+                Ask questions naturally and get internship suggestions,
+                application links, and career guidance.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>🎯 Smart Search</h3>
+            <p>
+                Search internships based on role, skills, company, or location
+                to find opportunities that match your interests.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Floating Chat Button -->
+<div id="chat-toggle" onclick="toggleChat()">
+    🤖
+</div>
+
+<!-- Chat Window -->
+<div id="chat-container">
+
+   <div id="chat-header">
+
+    <span>🤖 Uptern AI</span>
+
+    <div>
+        <button onclick="clearChat()" title="Clear Chat">🗑</button>
+        <button onclick="expandChat()">⤢</button>
+        <button onclick="toggleChat()">✖</button>
+    </div>
+
+</div>
+
+    <div id="chat-messages">
+        <div class="bot-message">
+            👋 Hi! I'm Uptern AI.<br>
+            Ask me anything about internships.
+        </div>
+    </div>
+
+    <div id="chat-input">
+
+        <input
+            id="msg"
+            placeholder="Type your message..."
+            onkeypress="if(event.key==='Enter') send()"
+        >
+
+        <button onclick="startVoice()">🎤</button>
+<button onclick="send()">➤</button>
+<button id="pauseBtn" onclick="toggleVoice()">⏸️</button>
+
+    </div>
+
+</div>
+
+<script>
+
+let recognition;
+
+function toggleChat() {
+
+    const chat = document.getElementById("chat-container");
+
+    if (chat.style.display === "flex") {
+        chat.style.display = "none";
+    } else {
+        chat.style.display = "flex";
+        loadChat();
+        document.getElementById("msg").focus();
+    }
+}
+
+function openChat(){
+
+    const chat = document.getElementById("chat-container");
+
+    chat.style.display = "flex";
+
+    loadChat();
+
+    document.getElementById("msg").focus();
+
+}
+
+function expandChat(){
+
+    const chat = document.getElementById("chat-container");
+
+    chat.classList.toggle("expanded");
+
+}
+
+async function loadChat() {
+
+    console.log("Loading chat history...");
+
+    const response = await fetch("/load_chat");
+    const data = await response.json();
+
+    console.log("Received:", data);
+
+    const messages = document.getElementById("chat-messages");
+
+    messages.innerHTML = "";
+
+if (data.length === 0) {
+    messages.innerHTML = `
+        <div class="bot-message">
+            👋 Hi! I'm Uptern AI.<br>
+            Ask me anything about internships.
+        </div>
+    `;
+    return;
+}
+
+    data.forEach(chat => {
+
+        console.log(chat);
+
+        if (chat.sender === "user") {
+
+            messages.innerHTML += `
+                <div class="user-message">${chat.message}</div>
+            `;
+
+        } else {
+
+            let reply = chat.message
+                .replace(/\n/g, "<br>")
+                .replace(
+                    /(https?:\/\/[^\s<]+)/g,
+                    '<a href="$1" target="_blank" class="apply-link">🚀 Apply Here</a>'
+                );
+
+            messages.innerHTML += `
+                <div class="bot-message">${reply}</div>
+            `;
+        }
+
+    });
+
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function startVoice() {
+
+    if (!('webkitSpeechRecognition' in window)) {
+
+        alert("Your browser doesn't support voice recognition.");
+
+        return;
+
+    }
+
+    recognition = new webkitSpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+
+        const transcript = event.results[0][0].transcript;
+
+        document.getElementById("msg").value = transcript;
+
+        send();
+    };
+
+    recognition.onerror = function(event) {
+
+        console.log(event.error);
+
+    };
+
+}
+
+function stopVoice() {
+    window.speechSynthesis.cancel();
+}
+
+async function send(){
+
+    window.speechSynthesis.cancel();
+    const input=document.getElementById("msg");
+
+    const message=input.value.trim();
+
+    if(message==="") return;
+
+    const messages=document.getElementById("chat-messages");
+
+    messages.innerHTML+=`
+        <div class="user-message">${message}</div>
+    `;
+
+    input.value="";
+
+    messages.innerHTML+=`
+        <div class="bot-message" id="typing">
+            Uptern AI is typing...
+        </div>
+    `;
+    
+
+    messages.scrollTop=messages.scrollHeight;
+
+    const response=await fetch("/chat",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            message:message
+        })
+
+    });
+
+   const data = await response.json();
+
+document.getElementById("typing").remove();
+
+// 🔊 Make Uptern speak the AI response
+const speech = new SpeechSynthesisUtterance(data.reply);
+
+speech.lang = "en-US";
+
+speech.onend = function() {
+    document.getElementById("pauseBtn").innerHTML = "⏸️";
+};
+
+window.speechSynthesis.speak(speech);
+
+let reply = data.reply
+    .replace(/\n/g, "<br>")
+    .replace(
+        /(https?:\/\/[^\s<]+)/g,
+        '<a href="$1" target="_blank" class="apply-link">🚀 Apply Here</a>'
+    );
+
+messages.innerHTML += `
+    <div class="bot-message">
+        ${reply}
+    </div>
+`;
+
+messages.scrollTop = messages.scrollHeight;
+
+}
+function toggleVoice() {
+
+    if (window.speechSynthesis.speaking) {
+
+        if (window.speechSynthesis.paused) {
+
+            window.speechSynthesis.resume();
+
+            document.getElementById("pauseBtn").innerHTML = "⏸️";
+
+        } else {
+
+            window.speechSynthesis.pause();
+
+            document.getElementById("pauseBtn").innerHTML = "▶️";
+
+        }
+
+    }
+
+}
+async function clearChat() {
+
+    if (!confirm("Clear your chat history?"))
+        return;
+
+    const response = await fetch("/clear_chat", {
+        method: "POST"
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        loadChat();
+    }
+}
+</script>
+</body>
+</html>

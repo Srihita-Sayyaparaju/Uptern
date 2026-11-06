@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Uptern</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Left Section -->
+    <div class="left">
+
+        <h1>🚀 Uptern</h1>
+
+        <h2>Start Your Journey!</h2>
+
+        <p>
+            Create your free account and unlock AI-powered internship discovery.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">
+                🤖 AI Career Assistant
+            </div>
+
+            <div class="feature">
+                💼 Live Internship Listings
+            </div>
+
+            <div class="feature">
+                🎯 Personalized Recommendations
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Right Section -->
+    <div class="right">
+
+        <div class="login-card">
+
+            <h2>Create Account</h2>
+
+            <p>Create your Uptern account</p>
+
+            <form
+            action="/signup"
+            method="POST"
+            onsubmit="return validateForm()"
+        >
+
+        <input
+            type="text"
+            id="full_name"
+            name="full_name"
+            placeholder="Full Name"
+            required
+        >
+
+        <input
+    type="email"
+    id="email"
+    name="email"
+    placeholder="Email Address"
+    oninput="this.value = this.value.toLowerCase()"
+    required
+>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            required
+        >
+
+        <input
+            type="password"
+            id="confirm_password"
+            name="confirm_password"
+            placeholder="Confirm Password"
+            required
+        >
+
+        <div id="password-message"></div>
+
+        <button type="submit">
+            Create Account
+        </button>
+
+
+            </form>
+
+            <p class="signup">
+                Already have an account?
+                <a href="/login">Login</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <script>
+
+const password = document.getElementById("password");
+const confirm = document.getElementById("confirm_password");
+const message = document.getElementById("password-message");
+
+function validateForm() {
+
+    // Clear previous message
+    message.innerHTML = "";
+
+    // Password length
+    if (password.value.length < 8) {
+
+        message.innerHTML = "❌ Password must be at least 8 characters long.";
+        message.style.color = "red";
+
+        return false;
+    }
+
+    // Passwords match
+    if (password.value !== confirm.value) {
+
+        message.innerHTML = "❌ Passwords do not match.";
+        message.style.color = "red";
+
+        return false;
+    }
+
+    // Strong password
+    if (
+        !/[A-Z]/.test(password.value) ||
+        !/[a-z]/.test(password.value) ||
+        !/[0-9]/.test(password.value) ||
+        !/[!@#$%^&*]/.test(password.value)
+    ) {
+
+        message.innerHTML =
+            "❌ Password must contain an uppercase letter, lowercase letter, number, and special character.";
+        message.style.color = "red";
+
+        return false;
+    }
+
+    return true;
+}
+
+</script>
+</body>
+</html>

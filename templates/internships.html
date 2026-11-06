@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Internships</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+<nav class="navbar">
+
+    <div class="logo">
+        🚀 Uptern
+    </div>
+
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/internships">Internships</a></li>
+         <li><a href="/companies">Explore Companies</a></li>
+        <li><a href="/" onclick="localStorage.setItem('openChat','true')">AI Assistant</a></li>
+        <li><a href="/#about">About</a></li>
+    </ul>
+
+</nav>
+
+<div class="search-section">
+
+    <h1 class="page-title">Latest Internships</h1>
+
+    <form action="/internships" method="GET" class="search-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by role, company, or skill..."
+            value="{{ search if search else '' }}"
+        >
+
+        <button type="submit">Search</button>
+
+        <div class="filters">
+
+            <select name="location">
+                <option value="">📍 All Locations</option>
+
+                {% for loc in locations %}
+                    <option value="{{ loc.location }}"
+                        {% if location == loc.location %}selected{% endif %}>
+                        {{ loc.location }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <select name="category">
+                <option value="">🏷 All Categories</option>
+
+                {% for cat in categories %}
+                    <option value="{{ cat.category }}"
+                        {% if category == cat.category %}selected{% endif %}>
+                        {{ cat.category }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Apply Filters</button>
+
+</div>
+
+</form>
+
+<h3 class="results-count">
+    Showing {{ ((page-1)*20)+1 }} - {{ ((page-1)*20)+jobs|length }} of {{ total }} internships
+</h3>
+
+<div class="container">
+
+{% for job in jobs %}
+
+<div class="job-card">
+
+    <h2>{{ job.title }}</h2>
+
+    <h3>{{ job.company }}</h3>
+
+    <p>📍 {{ job.location }}</p>
+
+    <p>🏷 {{ job.category }}</p>
+
+    <p>💰 {{ job.salary }}</p>
+
+    <a href="{{ job.apply_url }}" target="_blank">
+        Apply Now
+    </a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<!-- Pagination goes HERE -->
+
+<div class="pagination">
+
+    {% if page > 1 %}
+        <a href="?page={{ page-1 }}&search={{ search }}&location={{ location }}&category={{ category }}">
+            ⬅ Previous
+        </a>
+    {% endif %}
+
+    <span>Page {{ page }} of {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+        <a href="?page={{ page+1 }}&search={{ search }}&location={{ location }}&category={{ category }}">
+            Next ➜
+        </a>
+    {% endif %}
+
+</div>
+</body>
+</html>

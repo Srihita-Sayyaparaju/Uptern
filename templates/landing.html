@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Uptern</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🚀 Uptern
+    </div>
+
+    <ul class="nav-links">
+
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/signup">Sign Up</a></li>
+
+    </ul>
+
+</nav>
+
+<section class="hero" id="hero">
+
+    <h1>Find Your Dream Internship</h1>
+
+    <p>
+        AI-powered internship discovery platform built for students.
+    </p>
+
+    <div class="buttons">
+
+        <a href="/login">
+            <button>Login</button>
+        </a>
+
+        <a href="/signup">
+            <button class="secondary">
+                Create Account
+            </button>
+        </a>
+
+    </div>
+
+</section>
+
+<section class="about" id="about">
+
+    <h2>About Uptern</h2>
+
+    <p>
+        Uptern is an AI-powered internship discovery platform designed to help
+        students find the right internship opportunities quickly and easily.
+        Instead of searching across multiple websites, users can explore live
+        internships and receive personalized recommendations through an
+        intelligent AI assistant.
+    </p>
+
+    <div class="about-cards">
+
+        <div class="about-card">
+            <h3>🌍 Live Opportunities</h3>
+            <p>
+                Browse internships collected from trusted online sources with
+                real-time updates.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>🤖 AI Career Assistant</h3>
+            <p>
+                Ask questions naturally and get internship suggestions,
+                application links, and career guidance.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h3>🎯 Smart Search</h3>
+            <p>
+                Search internships based on role, skills, company, or location
+                to find opportunities that match your interests.
+            </p>
+        </div>
+
+</section>
+
+</body>
+</html>

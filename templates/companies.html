@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Companies | Uptern</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🚀 Uptern
+    </div>
+
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/internships">Internships</a></li>
+        <li><a href="/companies">Explore Companies</a></li>
+        <li><a href="/" onclick="localStorage.setItem('openChat','true')">AI Assistant</a></li>
+        <li><a href="/#about">About</a></li>
+    </ul>
+
+</nav>
+
+<section class="search-section">
+
+    <h1 class="page-title">Explore Companies</h1>
+
+    <p class="company-subtitle">
+        Discover top companies and visit their LinkedIn Jobs or Official Careers page.
+    </p>
+
+    <div class="container">
+
+        {% for company in companies %}
+
+        <div class="job-card">
+
+            <h2>🏢 {{ company.company_name }}</h2>
+
+            <h3>{{ company.industry }}</h3>
+
+            <div class="company-links">
+
+                <a href="{{ company.linkedin_jobs_url }}" target="_blank">
+                    🔗 LinkedIn Jobs
+                </a>
+
+                <a href="{{ company.careers_url }}" target="_blank">
+                    🌐 Official Careers
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+</body>
+</html>
